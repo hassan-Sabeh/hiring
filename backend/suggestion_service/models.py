@@ -16,4 +16,5 @@ class Company:
 @dataclass(frozen=True)
 class Suggestion:
     target_company_pk: int
+    potenial_partners: dict # dict of company names and accept/decline status
     
