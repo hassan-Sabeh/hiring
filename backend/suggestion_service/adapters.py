@@ -1,38 +1,30 @@
+from suggestion_service.ports import *
 from typing import Set, List, Dict
 
+class MailerAdapterMock(MailerAdapter):
+    def send_mail(self, recipients: Set[str], title: str, content: str) -> None:
+        pass
 
-#outgoing adapters (orange arrows)
+class TimerAdapterMock(TimerAdapter):
+    def set_timer(self, seconds_before_email_sending: int, target_company_key: int, email_type: int) -> None:
+        pass
 
-class MailerAdapter:
-    """
-    For Outbound Adapters you need to define classes/methods/interfaces and specify their signature
-    but the body should remain empty (cf following example)
-    """
-    def send_mail(self: "MailerAdapter", recipients: Set[str], title: str, content: str) -> None:
-        raise NotImplemented
-    
+class CompaniesAdapterMock(CompaniesAdapter):
+    def get_relevant_partnerships(self, country_code: int, industry: str) -> List[str]:
+        return ["google", "facebook", "apple"]
 
-class TimerAdapter:
-    def setTimer(self: "TimerAdapter", seconds_before_email_sending: int) -> None:
-        raise NotImplemented
+class PersistenceAdapterMock(PersistenceAdapter):
+    def find_suggestions(self, target_company_key: int) -> Dict[str, bool]:
+        return {"Yamaha":False, "pepsi": False, "Microsoft":False }
+    def add_suggestions(self, target_company_key: int, suggestions: Dict[(str, str)]) -> None:
+        pass
+    def update_suggestions(self, target_company_key: int, suggested_company: Dict[(str, str)]) -> None:
+        pass
 
-class CompaniesAdapter:
-    def get_relevant_partnerships(self: "CompaniesAdapter", country_code: int, industry: str) -> List[str]:
-        raise NotImplemented
-
-class PersistenceAdapter:
-    #find a company from a key, returns the object from db
-    def find_suggestions(self: "PersistenceAdapter", target_company_key: int) -> Dict[str, str]:
-        raise NotImplemented
-    # output is a list of suggestions where every suggested company is represented as a tuple (name, accepted/declined)
-    def add_suggestions(self: "PersistenceAdapter", target_company_key: int, suggestions: Dict[(str, str)]) -> None:
-        raise NotImplemented
-    def update_suggestions(self: "PersistenceAdapter", target_company_key: int, suggested_company: Dict[(str, str)]) -> None:
-        #suggested_company is a tuple containing the name of the company and the status (accepted or decline as from the web app adapter)
-        raise NotImplemented
-
-class GrowthAdapter:
-    def get_emails_sequence(self: "GrowthAdapter", target_company_key: int) -> List[tuple]:
-        raise NotImplemented
-    def get_email_details(self: "GrowthAdapter", target_company_key: int, email_type: int, suggested_partners: List[str]) -> None:
-        raise NotImplemented
+class GrowthAdapterMock(GrowthAdapter):
+    def get_emails_sequence(self: "GrowthAdapter") -> List[tuple]:
+        return [(1, 3600),(2, 86400),(4, 604800)]
+    def get_email_details(self: "GrowthAdapter", target_company_key: int, email_type: int, suggested_partners: List[str]) -> Dict:
+        return {"recipients":["john", "Monica", "Amelie"], 
+        "title":"suggestions!", 
+        "content":"Hello there, this is the list of etc..."}
