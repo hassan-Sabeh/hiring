@@ -63,19 +63,19 @@ Caller: private
 1.set the timer via the timer adapter.
 """
 
-# if __name__=="__main__":
-#     new_company = {
-#         "pk": 300,
-#         "country": 99,
-#         "industry": "tech"
-#     }
-#     domain = SuggestionsDomain()
-#     #testing public and private calls.
-#     print("########## handle_company_created ##############")
-#     domain.handle_company_created(new_company)
+if __name__=="__main__":
+    new_company = {
+        "pk": 300,
+        "country": 99,
+        "industry": "tech"
+    }
+    domain = SuggestionsDomain()
+    #testing public and private calls.
+    print("########## handle_company_created ##############")
+    domain.handle_company_created(new_company)
 
-#     print("########## handle_user_action_web_console ##############")
-#     domain.handle_user_action_web_console(new_company["pk"], "Microsoft")
+    print("########## handle_user_action_web_console ##############")
+    domain.handle_user_action_web_console(new_company["pk"], "Microsoft")
 
-#     print("########## handle_timer_expired ##############")
-#     domain.handle_timer_expired(new_company["pk"], 1)
+    print("########## handle_timer_expired ##############")
+    domain.handle_timer_expired(new_company["pk"], 1)
