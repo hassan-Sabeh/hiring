@@ -83,3 +83,33 @@ An example of public interface is given in [`suggestion_service/suggestions.py`]
 
 The **Outbound Adapters** (which flow is represented by the orange arrows on the schema), should be classes/methods/interfaces which exist but their body is empty. In Python, they would only contain `raise NotImplemented`
 An example is given in [`suggestion_service/adapters/mailer_adapter.py`](./suggestion_service/adapters/mailer_adapter.py)
+
+
+##############################
+Comments:
+── adapters_test.py                 unittesting mock adapters
+├── domain_logic_test.py            Behavioral testing domain logic
+├── examples                        examples files
+│   ├── example_adapter.py
+│   ├── example_domain_logic.py
+│   ├── example_models.py
+│   └── problem_schema.png
+├── htmlcov                          coverage report folder   
+│   
+├── README.md
+└── suggestion_service               application folder   
+    ├── adapters_mock.py             mock adapters   
+    ├── adapters.py                  Interfaces or "Ports"    
+    ├── domain_logic.py              Domain logic (Hexagon core)   
+    ├── __init__.py
+    ├── models.py                    Domain models.
+
+Testing:
+-Unittesting on adapters -> Passed
+-Behavior testing on Domain logic -> Passed
+-mypy run on test files and source files
+(for checking type conformity with interface abstract methods signatures)
+-Pylint all file -> linting
+-Coverage, tool for checking test coverage, result in /htmlcov/index.html
+
+

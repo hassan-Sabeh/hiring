@@ -1,56 +1,81 @@
-import unittest
-# from suggestion_service.domain_logic import SuggestionsDomain
-from suggestion_service.adapters import *
-from typing import Set, List, Dict
+from suggestion_service.domain_logic import SuggestionsDomain
 
-target_company_pk = 111
-country_code = 90
-mail_adapter = MailerAdapterMock()
-timer_adapter = TimerAdapterMock()
-companies_adapter = CompaniesAdapterMock()
-persistence_adapter = PersistenceAdapterMock()
-growth_adapter = GrowthAdapterMock()
 
-class DomainUnitTest(unittest.TestCase):
-    def test_send_email(self):
-        self.assertEqual(mail_adapter.send_mail(("john", "Doe"),
-            "title",
-            "content"), None)
+"""
+Integration testing the domain logic from the public interfaces exposed to other services.
 
-    def test_timer_set(self):
-        self.assertEqual(timer_adapter.set_timer(3600, target_company_pk, 1), None)
+Below is a description of the expected behavior of each method.
+"""
 
-    def test_get_companies(self):
-        self.assertTrue(type(companies_adapter.get_relevant_partnerships(
-            country_code,
-            "tech",
-        )) is list)
 
-    def test_get_suggestions(self):
-        self.assertTrue(type(persistence_adapter.find_suggestions(
-            target_company_pk)) is dict)
+"""
+handle_user_action_web_console
+--------------------------------
+Caller: action web console port
+--------------------------------
+1. getting suggestions from presistence adapter
+2. feeding back the updated suggestion back to the adapter
 
-    def test_add_suggestion(self):
-        self.assertEqual(persistence_adapter.add_suggestions(
-            target_company_pk,
-            {"Microsoft":False}
-            ), None)
-    def test_update_suggestion(self):
-        self.assertEqual(persistence_adapter.update_suggestions(
-            target_company_pk,
-            {"google":True}
-        ), None)
+"""
 
-    def test_get_emails_sequence(self):
-        self.assertTrue(type(growth_adapter.get_emails_sequence()) is list)
-    
-    def test_get_email_details(self):
-        self.assertTrue(type(growth_adapter.get_email_details(
-            target_company_pk,
-            1, # example email type 1 as an int
-            ["google", "apple", "tesla"] # example list of str as suggestion list
-        )) is dict)
-    
+"""
+handle_timer_expired
+--------------------------------
+Caller: timer port
+--------------------------------
+1. getting suggestions from presistence adapter
+2. cleaning up suggestions before sending (removing the ones
+that have been accepted or rejected)
+3. Getting email details from growth adapter
+4. transfering details to email adapter to send the mail.
 
-if __name__== "__main__":
-    unittest.main()
+"""
+
+
+"""
+handle_company_created
+--------------------------------
+Caller: companies adapter
+--------------------------------
+1. creating company object -> storing data on the model
+2. Getting the relevant suggestions by country code and industry
+from the compamies adapter.
+3. Building the suggestions dict.
+4. saving the suggestions via the persistence adapter
+5. getting email sequence from growth adapter
+6. setting first timer on the with the timer adapter
+"""
+
+
+"""
+__handle_new_suggestions_added
+--------------------------------
+Caller: private
+--------------------------------
+1.get email sequence from growth adapter and return it
+"""
+
+"""
+__set_timer
+--------------------------------
+Caller: private
+--------------------------------
+1.set the timer via the timer adapter.
+"""
+
+# if __name__=="__main__":
+#     new_company = {
+#         "pk": 300,
+#         "country": 99,
+#         "industry": "tech"
+#     }
+#     domain = SuggestionsDomain()
+#     #testing public and private calls.
+#     print("########## handle_company_created ##############")
+#     domain.handle_company_created(new_company)
+
+#     print("########## handle_user_action_web_console ##############")
+#     domain.handle_user_action_web_console(new_company["pk"], "Microsoft")
+
+#     print("########## handle_timer_expired ##############")
+#     domain.handle_timer_expired(new_company["pk"], 1)
